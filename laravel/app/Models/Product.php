@@ -35,6 +35,7 @@ class Product extends BaseModel
             'product_sku' => $this->product_sku,
             'media' => $this->media,
             'category' => $this->category,
+            'attribute' => $this->attribute,
             "start_date" => $this->start_date,
             "end_date" => $this->end_date,
             'created_by' => $this->created_by,
@@ -57,5 +58,10 @@ class Product extends BaseModel
     public function category()
     {
         return $this->belongsToMany(Category::class, 'category_products', 'product_id', 'category_id');
+    }
+
+    public function attribute()
+    {
+        return $this->belongsToMany(Attribute::class, 'item_attributes', 'item_id', 'attribute_id')->where('item_type', 'prod');
     }
 }

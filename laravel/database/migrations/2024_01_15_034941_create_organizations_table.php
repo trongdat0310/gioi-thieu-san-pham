@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();
             $table->timestamps();
+            $table->index('org_code');
         });
     }
 

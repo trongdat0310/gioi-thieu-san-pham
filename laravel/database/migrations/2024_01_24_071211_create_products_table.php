@@ -19,11 +19,13 @@ return new class extends Migration
             $table->longText('product_description');
             $table->decimal('primary_price');
             $table->string('product_sku')->unique();
-            $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();
             $table->timestamps();
+            $table->index('org_id');
+            $table->index('product_code');
         });
     }
 

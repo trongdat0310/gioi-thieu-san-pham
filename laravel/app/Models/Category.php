@@ -28,6 +28,8 @@ class Category extends Model
             'category_code' => $this->category_code,
             'category_name' => $this->category_name,
             'product' => $this->product,
+            'parent' => $this->parent,
+            'attribute' => $this->attribute,
             "start_date" => $this->start_date,
             "end_date" => $this->end_date,
             'created_by' => $this->created_by,
@@ -49,6 +51,11 @@ class Category extends Model
 
     public function parent()
     {
-        return $this->belongsToMany(ItemCategory::class, 'category_products', 'category_id', 'product_id');
+        return $this->belongsToMany(Category::class, 'item_categories', 'category_id', 'parent_category_id');
+    }
+
+    public function attribute()
+    {
+        return $this->belongsToMany(Attribute::class, 'item_attributes', 'item_id', 'attribute_id')->where('item_type', 'cate');
     }
 }

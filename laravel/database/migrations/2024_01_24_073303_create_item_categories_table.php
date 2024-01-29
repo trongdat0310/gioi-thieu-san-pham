@@ -16,11 +16,14 @@ return new class extends Migration
             $table->unsignedBigInteger('org_id');
             $table->unsignedBigInteger('parent_category_id');
             $table->unsignedBigInteger('category_id');
-            $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();
             $table->timestamps();
+            $table->index('org_id');
+            $table->index('parent_category_id');
+            $table->index('category_id');
         });
     }
 

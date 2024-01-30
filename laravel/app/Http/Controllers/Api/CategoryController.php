@@ -24,7 +24,7 @@ class CategoryController extends Controller
 
             return response()->json($categoryData, 200);
         } catch (\Exception $e) {
-            return response()->json(['data' => "Xác thực không thành công: " . $e->getMessage()], 401);
+            return response()->json(['data' => "Lỗi rồi: " . $e->getMessage()], 401);
         }
     }
 

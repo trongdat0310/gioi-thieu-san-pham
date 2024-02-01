@@ -1,10 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\AttributeController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ItemCategoryController;
 use App\Http\Controllers\Api\MediaController;
+use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\Api\PermissionController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\SupperUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,29 +29,39 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth.api'])->group(function () {
-    Route::group(['prefix' => "/account"], function () {
-        Route::get('/', [AccountController::class, 'index']);
+    Route::apiResource("account", AccountController::class);
+
+    Route::group(['prefix' => "/supper-user"], function () {
+        Route::post('/', [SupperUserController::class, 'store']);
+        Route::delete('/{id}', [SupperUserController::class, 'destroy']);
     });
 
-    Route::group(['prefix' => "/product"], function () {
-        Route::get('/', [ProductController::class, 'index']);
-    });
+    Route::apiResource("organization", OrganizationController::class);
 
-    Route::group(['prefix' => "/media"], function () {
-        Route::get('/', [MediaController::class, 'index']);
-    });
+    Route::apiResource("product", ProductController::class);
 
-    Route::group(['prefix' => "/category"], function () {
-        Route::get('/', [CategoryController::class, 'index']);
-    });
+    Route::apiResource("media", MediaController::class);
 
-    // Route::group(['prefix' => "/permission"], function () {
-    //     Route::get('/', [PermissionController::class, 'index']);
-    //     Route::post('/store', [PermissionController::class, 'store']);
-    //     Route::get('/show/{id}', [PermissionController::class, 'show']);
-    //     Route::put('/update/{id}', [PermissionController::class, 'update']);
-    //     Route::delete('/destroy/{id}', [PermissionController::class, 'destroy']);
+    Route::apiResource("category", CategoryController::class);
+
+    Route::apiResource("item-category", ItemCategoryController::class);
+
+    Route::apiResource("attribute", AttributeController::class);
+
+    // Route::group(['prefix' => "/role"], function () {
+    //     Route::get('/', [RoleController::class, 'index']);
+    //     Route::post('/store', [RoleController::class, 'store']);
+    //     Route::get('/show/{id}', [RoleController::class, 'show']);
+    //     Route::put('/update/{id}', [RoleController::class, 'update']);
+    //     Route::delete('/destroy/{id}', [RoleController::class, 'destroy']);
     // });
 
     Route::apiResource("permission", PermissionController::class);
+
+    Route::apiResource("role", RoleController::class);
 });
+
+// Route tùy chỉnh xử lý 404
+Route::fallback(function () {
+    return response()->json("Không tồn tại trang này", 404); // Thay 'errors.404' bằng tên view bạn muốn hiển thị
+})->name('404');

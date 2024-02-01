@@ -14,17 +14,9 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $products = Product::all();
-            $productData = [];
-            if ($products) {
-                foreach ($products as $product) {
-                    $productData[] = $product->getDataJson();
-                }
-            }
-
-            return response()->json($productData, 200);
+            return $this->indexObject(Product::class);
         } catch (\Exception $e) {
-            return response()->json(['data' => "Lỗi rồi: " . $e->getMessage()], 401);
+            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }
     }
 
@@ -33,7 +25,19 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = [
+                'product_code' => $request->product_code,
+                'product_name' => $request->product_name,
+                'product_description' => $request->product_description,
+                'primary_price' => $request->primary_price,
+                'product_sku' => $request->product_sku,
+            ];
+
+            return $this->storeObject($request, Product::class, $data);
+        } catch (\Exception $e) {
+            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
+        }
     }
 
     /**
@@ -41,7 +45,11 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            return $this->showObject(Product::class, $id);
+        } catch (\Exception $e) {
+            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
+        }
     }
 
     /**
@@ -49,7 +57,19 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $data = [
+                'product_code' => $request->product_code,
+                'product_name' => $request->product_name,
+                'product_description' => $request->product_description,
+                'primary_price' => $request->primary_price,
+                'product_sku' => $request->product_sku,
+            ];
+
+            return $this->updateObject($request, Product::class, $data, $id);
+        } catch (\Exception $e) {
+            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
+        }
     }
 
     /**
@@ -57,6 +77,10 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            return $this->destroyObject(Product::class, $id);
+        } catch (\Exception $e) {
+            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
+        }
     }
 }

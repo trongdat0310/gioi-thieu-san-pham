@@ -21,6 +21,22 @@ class Role extends Model
         'last_updated_by',
     ];
 
+    public function getDataJson()
+    {
+        $data = [
+            "id" => $this->id,
+            'org_id' => $this->org_id,
+            'role_code' => $this->role_code,
+            'role_name' => $this->role_name,
+            "start_date" => $this->start_date,
+            "end_date" => $this->end_date,
+            'created_by' => $this->created_by,
+            'last_updated_by' => $this->last_updated_by,
+        ];
+
+        return $data;
+    }
+
     // Mối quan hệ với bảng `users`
     public function users()
     {

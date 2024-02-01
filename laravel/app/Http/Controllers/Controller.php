@@ -25,9 +25,50 @@ class Controller extends BaseController
         // return false;
     }
 
+    public function generateRandomPassword()
+    {
+        // Đặt các ký tự có thể sử dụng
+        $lowercase = 'abcdefghijklmnopqrstuvwxyz';
+        $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $numbers = '0123456789';
+        $specialChars = '!@#$%^&*()-_';
+
+        // Tạo một mảng chứa các loại ký tự
+        $characterSets = array(
+            $lowercase,
+            $uppercase,
+            $numbers,
+            $specialChars
+        );
+
+        $password = '';
+
+        // Bắt đầu với ít nhất một ký tự từ mỗi loại
+        foreach ($characterSets as $characterSet) {
+            $password .= $characterSet[rand(0, strlen($characterSet) - 1)];
+        }
+
+        // Đảm bảo mật khẩu có độ dài ít nhất là 4
+        for ($i = 4; $i < 15; $i++) {
+            // Lựa chọn ngẫu nhiên một loại ký tự từ mảng
+            $randomSet = $characterSets[rand(0, count($characterSets) - 1)];
+
+            // Lựa chọn ngẫu nhiên một ký tự từ loại ký tự được chọn
+            $randomChar = $randomSet[rand(0, strlen($randomSet) - 1)];
+
+            // Thêm ký tự vào mật khẩu
+            $password .= $randomChar;
+        }
+
+        // Trộn ngẫu nhiên các ký tự trong mật khẩu
+        $password = str_shuffle($password);
+
+        return $password;
+    }
+
     public function indexObject($object)
     {
-        $objects = $object::all();
+        $objects = $object::where('org_id', Auth::user()->org_id)->orderBy('id', 'desc')->paginate(env('LIMIT'));
         $objectData = [];
         if ($objects) {
             foreach ($objects as $object) {
@@ -70,7 +111,7 @@ class Controller extends BaseController
         $object = self::checkExist($model, $id);
 
         if ($object) {
-            return response()->json(["data" => $object->getDataJson()], 200);
+            return response()->json($object->getDataJson(), 200);
         }
         return response()->json("Đối tượng này không tồn tại", 401);
     }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Media;
+use App\Models\Attribute;
 use Illuminate\Http\Request;
 
-class MediaController extends Controller
+class AttributeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class MediaController extends Controller
     public function index()
     {
         try {
-            return $this->indexObject(Media::class);
+            return $this->indexObject(Attribute::class);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }
@@ -27,13 +27,11 @@ class MediaController extends Controller
     {
         try {
             $data = [
-                'media_type' => $request->media_type,
-                'media_path' => $request->media_path,
-                'media_code' => $request->media_code,
-                'media_name' => $request->media_name,
+                'attribute_code' => $request->attribute_code,
+                'attribute_name' => $request->attribute_name,
             ];
 
-            return $this->storeObject($request, Media::class, $data);
+            return $this->storeObject($request, Attribute::class, $data);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }
@@ -45,7 +43,7 @@ class MediaController extends Controller
     public function show(string $id)
     {
         try {
-            return $this->showObject(Media::class, $id);
+            return $this->showObject(Attribute::class, $id);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }
@@ -58,13 +56,11 @@ class MediaController extends Controller
     {
         try {
             $data = [
-                'media_type' => $request->media_type,
-                'media_path' => $request->media_path,
-                'media_code' => $request->media_code,
-                'media_name' => $request->media_name,
+                'attribute_code' => $request->attribute_code,
+                'attribute_name' => $request->attribute_name,
             ];
 
-            return $this->updateObject($request, Media::class, $data, $id);
+            return $this->updateObject($request, Attribute::class, $data, $id);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }
@@ -76,7 +72,7 @@ class MediaController extends Controller
     public function destroy(string $id)
     {
         try {
-            return $this->destroyObject(Media::class, $id);
+            return $this->destroyObject(Attribute::class, $id);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }

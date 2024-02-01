@@ -14,17 +14,9 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            $categorys = Category::all();
-            $categoryData = [];
-            if ($categorys) {
-                foreach ($categorys as $category) {
-                    $categoryData[] = $category->getDataJson();
-                }
-            }
-
-            return response()->json($categoryData, 200);
+            return $this->indexObject(Category::class);
         } catch (\Exception $e) {
-            return response()->json(['data' => "Lỗi rồi: " . $e->getMessage()], 401);
+            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }
     }
 
@@ -33,7 +25,16 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = [
+                'category_code' => $request->category_code,
+                'category_name' => $request->category_name,
+            ];
+
+            return $this->storeObject($request, Category::class, $data);
+        } catch (\Exception $e) {
+            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
+        }
     }
 
     /**
@@ -41,7 +42,11 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            return $this->showObject(Category::class, $id);
+        } catch (\Exception $e) {
+            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
+        }
     }
 
     /**
@@ -49,7 +54,16 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $data = [
+                'category_code' => $request->category_code,
+                'category_name' => $request->category_name,
+            ];
+
+            return $this->updateObject($request, Category::class, $data, $id);
+        } catch (\Exception $e) {
+            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
+        }
     }
 
     /**
@@ -57,6 +71,10 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            return $this->destroyObject(Category::class, $id);
+        } catch (\Exception $e) {
+            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
+        }
     }
 }

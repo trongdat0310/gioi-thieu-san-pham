@@ -3,21 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Media;
+use App\Models\ItemCategory;
 use Illuminate\Http\Request;
 
-class MediaController extends Controller
+class ItemCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        try {
-            return $this->indexObject(Media::class);
-        } catch (\Exception $e) {
-            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
-        }
+        //
     }
 
     /**
@@ -27,13 +23,11 @@ class MediaController extends Controller
     {
         try {
             $data = [
-                'media_type' => $request->media_type,
-                'media_path' => $request->media_path,
-                'media_code' => $request->media_code,
-                'media_name' => $request->media_name,
+                'parent_category_id' => $request->parent_category_id,
+                'category_id' => $request->category_id,
             ];
 
-            return $this->storeObject($request, Media::class, $data);
+            return $this->storeObject($request, ItemCategory::class, $data);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }
@@ -44,11 +38,7 @@ class MediaController extends Controller
      */
     public function show(string $id)
     {
-        try {
-            return $this->showObject(Media::class, $id);
-        } catch (\Exception $e) {
-            return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
-        }
+        //
     }
 
     /**
@@ -58,13 +48,11 @@ class MediaController extends Controller
     {
         try {
             $data = [
-                'media_type' => $request->media_type,
-                'media_path' => $request->media_path,
-                'media_code' => $request->media_code,
-                'media_name' => $request->media_name,
+                'parent_category_id' => $request->parent_category_id,
+                'category_id' => $request->category_id,
             ];
 
-            return $this->updateObject($request, Media::class, $data, $id);
+            return $this->updateObject($request, ItemCategory::class, $data, $id);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }
@@ -76,7 +64,7 @@ class MediaController extends Controller
     public function destroy(string $id)
     {
         try {
-            return $this->destroyObject(Media::class, $id);
+            return $this->destroyObject(ItemCategory::class, $id);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }

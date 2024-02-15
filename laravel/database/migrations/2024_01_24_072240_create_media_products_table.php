@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('org_id');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('media_id');
-            $table->string('primary_flag');
+            $table->string('primary_flag')->nullable();
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();

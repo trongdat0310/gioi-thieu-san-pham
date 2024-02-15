@@ -31,11 +31,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware(['auth.api'])->group(function () {
     Route::apiResource("account", AccountController::class);
 
-    Route::group(['prefix' => "/supper-user"], function () {
-        Route::post('/', [SupperUserController::class, 'store']);
-        Route::delete('/{id}', [SupperUserController::class, 'destroy']);
-    });
-
     Route::apiResource("organization", OrganizationController::class);
 
     Route::apiResource("product", ProductController::class);

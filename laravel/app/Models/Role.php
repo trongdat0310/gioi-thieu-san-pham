@@ -28,6 +28,7 @@ class Role extends Model
             'org_id' => $this->org_id,
             'role_code' => $this->role_code,
             'role_name' => $this->role_name,
+            'permission' => $this->permissions,
             "start_date" => $this->start_date,
             "end_date" => $this->end_date,
             'created_by' => $this->created_by,

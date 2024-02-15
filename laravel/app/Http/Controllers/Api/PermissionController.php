@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
+use App\Models\RolePermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -73,7 +74,17 @@ class PermissionController extends Controller
     public function destroy(string $id)
     {
         try {
-            return $this->destroyObject(Permission::class, $id);
+            $permission = self::checkExist(Permission::class, $id);
+            $rolePermission = RolePermission::where('permission_id', $id)->where('org_id', Auth::user()->org_id)->first();
+
+            if ($permission) {
+                $permission->delete();
+            }
+            if ($rolePermission) {
+                $rolePermission->delete();
+            }
+
+            return response()->json("Xóa thành công", 200);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attribute;
+use App\Models\ItemAttribute;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AttributeController extends Controller
 {
@@ -71,8 +73,17 @@ class AttributeController extends Controller
      */
     public function destroy(string $id)
     {
+        $attribute = self::checkExist(Attribute::class, $id);
+        $itemAttribute = ItemAttribute::where('item_id', $id)->where('org_id', Auth::user()->org_id)->first();
         try {
-            return $this->destroyObject(Attribute::class, $id);
+            if ($attribute) {
+                $attribute->delete();
+            }
+            if ($itemAttribute) {
+                $itemAttribute->delete();
+            }
+
+            return response()->json("Xóa thành công", 200);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }

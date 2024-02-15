@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class Controller extends BaseController
 {
@@ -86,16 +87,43 @@ class Controller extends BaseController
         return $object;
     }
 
-    public function storeObject($request, $model, $data1)
+    public function storeObject($request, $model, $data1, $isRelation = false, $dataRelation = [], $columnRelation = '', $modelRelation = false)
     {
+        $validator = Validator::make($request->all(), [
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
         $data2 = [
             'org_id' => Auth::user()->org_id,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
-            'created_by' => Auth::user()->id,
-            'last_updated_by' => Auth::user()->id,
+            'created_by' => $userId = Auth::user()->id,
+            'last_updated_by' => $userId,
         ];
 
+        $data = array_merge($data1, $data2);
+
+        try {
+            $object = $model::create($data);
+
+            if ($isRelation) {
+                $data2[$columnRelation] = $object->id;
+                $this->storeRelationObject($modelRelation, $dataRelation, $data2);
+            }
+
+            return response()->json("Tạo thành công", 200);
+        } catch (\Exception $e) {
+            return response()->json("Tạo không thành công: " . $e->getMessage(), 401);
+        }
+    }
+
+    public function storeRelationObject($model, $data1, $data2)
+    {
         $data = array_merge($data1, $data2);
 
         try {
@@ -116,11 +144,20 @@ class Controller extends BaseController
         return response()->json("Đối tượng này không tồn tại", 401);
     }
 
-    public function updateObject($request, $model, $data1, $id)
+    public function updateObject($request, $model, $data1, $id, $isRelation = false, $dataRelation = [], $columnRelation = '', $modelRelation = false)
     {
         $object = self::checkExist($model, $id);
 
         if ($object) {
+            $validator = Validator::make($request->all(), [
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after:start_date',
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 400);
+            }
+
             $data2 = [
                 'org_id' => Auth::user()->org_id,
                 'start_date' => $request->start_date,
@@ -132,12 +169,31 @@ class Controller extends BaseController
 
             try {
                 $object->update($data);
+
+                if ($isRelation) {
+                    $data2[$columnRelation] = $id;
+                    $this->updateRelationObject($modelRelation, $id, $dataRelation, $data2, $columnRelation);
+                }
                 return response()->json("Cập nhập thành công", 200);
             } catch (\Exception $e) {
                 return response()->json("Cập nhập không thành công: " . $e->getMessage(), 401);
             }
         }
         return response()->json("Đối tượng này không tồn tại", 401);
+    }
+
+    public function updateRelationObject($model, $id, $data1, $data2, $columnRelation)
+    {
+        $objectRelation = $model::query()->where($columnRelation, $id)->where('org_id', Auth::user()->org_id)->first();
+
+        $data = array_merge($data1, $data2);
+
+        try {
+            $objectRelation->update($data);
+            return response()->json("Cập nhập thành công", 200);
+        } catch (\Exception $e) {
+            return response()->json("Cập nhập không thành công: " . $e->getMessage(), 401);
+        }
     }
 
     public function destroyObject($model, $id)

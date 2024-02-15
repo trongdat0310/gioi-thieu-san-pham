@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Media;
+use App\Models\MediaProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MediaController extends Controller
 {
@@ -76,7 +78,17 @@ class MediaController extends Controller
     public function destroy(string $id)
     {
         try {
-            return $this->destroyObject(Media::class, $id);
+            $media = self::checkExist(Media::class, $id);
+            $mediaProduct = MediaProduct::where('media_id', $id)->where('org_id', Auth::user()->org_id)->first();
+
+            if ($media) {
+                $media->delete();
+            }
+            if ($mediaProduct) {
+                $mediaProduct->delete();
+            }
+
+            return response()->json("Xóa thành công", 200);
         } catch (\Exception $e) {
             return response()->json("Lỗi rồi: " . $e->getMessage(), 401);
         }
